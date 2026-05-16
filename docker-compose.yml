@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: load_testing_db
+    ports:
+      - "5432:5432"
+    # ADDED THIS BACK
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  influxdb:
+    image: influxdb:2.7-alpine
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: password123
+      DOCKER_INFLUXDB_INIT_ORG: loadtest
+      DOCKER_INFLUXDB_INIT_BUCKET: metrics
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: supersecrettoken123
+    # ADDED THIS BACK
+    volumes:
+      - influxdata:/var/lib/influxdb2
+
+  worker:
+    build: 
+      context: .
+      dockerfile: Dockerfile.worker
+    deploy:
+      replicas: 3
+    depends_on:
+      - redis
+      - postgres
+      - influxdb
+    environment:
+      DATABASE_URL: "postgresql://admin:password123@postgres:5432/load_testing_db?schema=public"
+
+# ADDED THIS BACK
+volumes:
+  pgdata:
+  influxdata:

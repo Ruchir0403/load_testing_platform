@@ -1,0 +1,8 @@
+{
+  "name": "load-testing-platform",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}

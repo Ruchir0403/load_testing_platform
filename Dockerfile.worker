@@ -1,0 +1,21 @@
+FROM node:18-alpine
+WORKDIR /app
+
+# Copy package configurations
+COPY package*.json ./
+COPY tsconfig.json ./
+COPY packages/database/package.json ./packages/database/
+COPY apps/worker-node/package.json ./apps/worker-node/
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
+COPY packages/database/ ./packages/database/
+COPY apps/worker-node/ ./apps/worker-node/
+
+# Generate Prisma Client for the worker
+RUN npm run generate -w @loadtest/database
+
+# Start the worker
+CMD ["npm", "start", "-w", "@loadtest/worker"]

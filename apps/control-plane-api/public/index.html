@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Load Testing Dashboard</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: system-ui; background: #0f172a; color: #f8fafc; padding: 2rem; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .card { background: #1e293b; padding: 1.5rem; border-radius: 8px; text-align: center; }
+        .card h3 { margin: 0; font-size: 0.9rem; color: #94a3b8; text-transform: uppercase; }
+        .card p { margin: 10px 0 0; font-size: 2rem; font-weight: bold; color: #38bdf8; }
+        canvas { background: #1e293b; border-radius: 8px; padding: 1rem; max-height: 400px;}
+    </style>
+</head>
+<body>
+    <h1>Real-Time Telemetry</h1>
+    
+    <div class="grid">
+        <div class="card"><h3>Live RPS</h3><p id="rps">0</p></div>
+        <div class="card"><h3>Avg Latency</h3><p id="avg">0 ms</p></div>
+        <div class="card"><h3>P95 Latency</h3><p id="p95">0 ms</p></div>
+    </div>
+
+    <canvas id="latencyChart"></canvas>
+
+    <script>
+        const socket = io();
+        
+        // Setup Chart.js
+        const ctx = document.getElementById('latencyChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: { labels: [], datasets: [{ label: 'P95 Latency (ms)', data: [], borderColor: '#38bdf8', tension: 0.4 }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true } }, animation: false }
+        });
+
+        // Listen for live metrics
+        socket.on('live-metrics', (data) => {
+            document.getElementById('rps').innerText = data.rps;
+            document.getElementById('avg').innerText = data.avgLatency + ' ms';
+            document.getElementById('p95').innerText = data.p95Latency + ' ms';
+
+            // Update Chart
+            if (chart.data.labels.length > 15) { chart.data.labels.shift(); chart.data.datasets[0].data.shift(); }
+            chart.data.labels.push(data.timestamp);
+            chart.data.datasets[0].data.push(data.p95Latency);
+            chart.update();
+        });
+    </script>
+</body>
+</html>

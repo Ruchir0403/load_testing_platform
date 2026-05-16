@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  projects  Project[]
+}
+
+model Project {
+  id        String     @id @default(uuid())
+  name      String
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  scenarios Scenario[]
+}
+
+model Scenario {
+  id           String   @id @default(uuid())
+  name         String
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id])
+  targetUrl    String
+  method       String   @default("GET")
+  payload      String?  
+  headers      String?  
+  virtualUsers Int      @default(1)
+  durationSec  Int      @default(60)
+  
+  errorRate    Float    @default(0.0) 
+  addedLatency Int      @default(0)   
+  
+  createdAt    DateTime @default(now())
+}

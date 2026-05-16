@@ -1,0 +1,14 @@
+{
+  "name": "@loadtest/worker",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@influxdata/influxdb-client": "^1.35.0",
+    "@loadtest/database": "*",
+    "bullmq": "^5.76.8",
+    "ioredis": "^5.10.1",
+    "undici": "^6.25.0"
+  }
+}
