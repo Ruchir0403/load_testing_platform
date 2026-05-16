@@ -1,4 +1,4 @@
-# ⚡ Distributed Load Engine
+# Distributed Load Engine
 
 A scalable, distributed load-testing and chaos engineering platform built to benchmark API performance, monitor real-time telemetry, and test application resilience under extreme network conditions.
 
@@ -9,7 +9,7 @@ A scalable, distributed load-testing and chaos engineering platform built to ben
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
 
-## 🚀 Key Features
+## Key Features
 
 * **Distributed Execution Plane:** Utilizes Redis and BullMQ to distribute high-throughput load-testing jobs across a horizontally scaled cluster of Dockerized worker nodes.
 * **High-Volume Telemetry Ingestion:** Workers batch and stream sub-millisecond latency metrics to InfluxDB, preventing traditional relational database bottlenecks during extreme load.
@@ -17,7 +17,7 @@ A scalable, distributed load-testing and chaos engineering platform built to ben
 * **Chaos Engineering Engine:** Built-in middleware allows engineers to simulate hostile network conditions by dynamically injecting artificial latency and programmable packet drop rates (Chaos Mode).
 * **High-Performance HTTP Client:** Worker nodes leverage `undici` to maximize connection pooling and achieve thousands of concurrent requests from a single container.
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 architecture-beta
